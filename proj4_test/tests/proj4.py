@@ -63,7 +63,7 @@ class usertests(Xv6Test):
   timeout = 240
 
 # To include full regression test by running usertests, uncomment the line below.
-all_tests.append(usertests)
+# all_tests.append(usertests)
 
 from testing.runtests import main
 main(build_test, all_tests)

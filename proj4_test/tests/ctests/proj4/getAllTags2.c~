@@ -7,6 +7,15 @@
 #define O_RDWR 0x002
 #define O_CREATE 0x200
 
+#define assert(x) if (x) {} else { \
+   printf(1, "%s: %d ", __FILE__, __LINE__); \
+   printf(1, "assert failed (%s)\n", # x); \
+   printf(1, "TEST FAILED\n"); \
+   kill(ppid); \
+   exit(); \
+}
+
+
 int
 main(int argc, char *argv[])
 {
@@ -31,10 +40,10 @@ main(int argc, char *argv[])
     int numTags = getAllTags(fd, keys, 3);
     assert(numTags == 3);
     int i, j;
-    const char * buffer_val;
+    // char * buffer_val;
     for(i = 0; i < numTags; i++){
         char buffer[8];
-        expected_val = vals[i];
+        char* expected_val = vals[i];
         int len = getFileTag(fd, keys[i].key, buffer, 8);
         assert(len > 8);
         for (j = 0; j < len; j++) {

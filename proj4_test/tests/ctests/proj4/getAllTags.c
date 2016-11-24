@@ -37,19 +37,24 @@ main(int argc, char *argv[])
    key = "movie";
    val = "arrival";
    res = tagFile(fd, key, val, len);
+   key = "lang";
+   val = "haskell";
+   res = tagFile(fd, key, val, len);
+
    assert(res>0);
    struct Key keys[5];
    int maxTags = 5;
    int tagNum = getAllTags(fd, keys, maxTags);
-   assert(tagNum == 2);
+   assert(tagNum == 3);
    printf(1, "key0 is %s\n", keys[0].key);
    printf(1, "key1 is %s\n", keys[1].key);
+   printf(1, "key3 is %s\n", keys[2].key);
    assert(strcmp(keys[0].key, "type") == 0);
-  
    assert(strcmp(keys[1].key, "movie") == 0);
+   assert(strcmp(keys[2].key, "lang") == 0);
 
    tagNum = getAllTags(fd, keys, 1);
-   assert(tagNum == 2);
+   assert(tagNum == 3);
 /*
    valueLength = getFileTag(fd, key, buf1, 7);
    assert(valueLength == 7);

@@ -7,9 +7,21 @@
 #define O_RDWR 0x002
 #define O_CREATE 0x200
 
+
+volatile int global = 1;
+int ppid;
+#define assert(x) if (x) {} else { \
+   printf(1, "%s: %d ", __FILE__, __LINE__); \
+   printf(1, "assert failed (%s)\n", # x); \
+   printf(1, "TEST FAILED\n"); \
+   kill(ppid); \
+   exit(); \
+}
+
 int
 main(int argc, char *argv[])
 {
+    ppid = getpid();
     char * key[3];
     char * vals[3];
     int fd = open("ls", O_RDWR);
@@ -17,7 +29,7 @@ main(int argc, char *argv[])
     int len = 8;
     key[0] = "type1";
     vals[0] = "utility1";
-    res = tagFile(fd, key[0], vals[0], len);  
+    res = tagFile(fd, key[0], vals[0], len); 
     assert(res > 0);
     key[1] = "type2";
     vals[1] = "utility2";
@@ -31,12 +43,12 @@ main(int argc, char *argv[])
     int numTags = getAllTags(fd, keys, 3);
     assert(numTags == 3);
     int i, j;
-    char * buffer_val;
+    // const char * buffer_val;
     for(i = 0; i < numTags; i++){
         char buffer[8];
-        expected_val = vals[i];
+        char *expected_val = vals[i];
         int len = getFileTag(fd, keys[i].key, buffer, 8);
-        assert(len > 8);
+        assert(len == 8);
         for (j = 0; j < len; j++) {
             char v_actual = buffer[j];
             assert(v_actual == expected_val[j]);
