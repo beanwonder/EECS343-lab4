@@ -27,7 +27,9 @@ test_values = [
   {'name': 'getFileTag'},
   {'name': 'removeFileTag2'},
   {'name': 'getAllTags'},
-  {'name': 'getAllTags2'}
+  {'name': 'getAllTags2'},
+  {'name': 'add_remove_16tags'},
+  {'name': 'overwrite'}
 ]
 
 all_tests = []

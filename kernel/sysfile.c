@@ -438,7 +438,9 @@ int sys_tagFile(void)
   int i;
   // cprintf("value len: %d\n", value_len);
   for (i = 0; i < BSIZE/sizeof(struct Tag); ++i) {
-    if (tags[i].used != 1 || strncmp(key, tags[i].key, key_len) == 0) {
+    if (tags[i].used != 1 || 
+        (strlen(tags[i].key) == key_len && 
+          strncmp(key, tags[i].key, key_len) == 0)) {
       safestrcpy(tags[i].key, key, key_len+1);
       // tags[i].key[key_len] = 0;
       safestrcpy(tags[i].value, value, value_len+1);
@@ -499,8 +501,12 @@ int sys_getFileTag(void)
   int val_len;
   // cprintf("before search2\n");
   for (i = 0; i < BSIZE/sizeof(struct Tag); ++i) {
-    if (tags[i].used == 1 && strncmp(key, tags[i].key, key_len) == 0) {
+    if (tags[i].used == 1 && strlen(tags[i].key) == key_len 
+      && strncmp(key, tags[i].key, key_len) == 0) {
       val_len = strlen(tags[i].value);
+      //cprintf("get tag target key: %s\n", key);
+      //cprintf("get tag find key: %s\n", tags[i].key);
+      //cprintf("get tag find in tag array num %d\n", i);
       // cprintf("sys_getFiletag: val len: %d buffer len %d\n", val_len, buf_len);
       if (val_len <= buf_len) {
         strncpy(buf, tags[i].value, val_len);
@@ -545,15 +551,18 @@ int sys_removeFileTag(void)
   int last;
   // first find the key tag
   for (i = 0; i < BSIZE/sizeof(struct Tag); ++i) {
-    if (tags[i].used == 1 && strncmp(key, tags[i].key, key_len) == 0) {
+    if (tags[i].used == 1 && strlen(tags[i].key) == key_len
+        && strncmp(key, tags[i].key, key_len) == 0) {
       target = i;
       break;
     }
   }
 
   // not find
-  if (i == BSIZE/sizeof(struct Tag))
+  // cprintf("tag array num :%d\n", i);
+  if (i == BSIZE/sizeof(struct Tag) || tags[i].used == 0) {
     return -1;
+  }
 
   // find the last one
   for (; i < BSIZE/sizeof(struct Tag); ++i) {
@@ -564,11 +573,19 @@ int sys_removeFileTag(void)
       break;
     }
   }
-
-  tags[target] = tags[last];
+  // cprintf("sizeof Tag: %d\n", sizeof(struct Tag));
+  // cprintf("last one: %d\n", last);
+  // cprintf("target one: %d\n", target);
+  int len = strlen(tags[last].key);
+  safestrcpy(tags[target].key, tags[last].key, len+1);
+  len = strlen(tags[last].value);
+  safestrcpy(tags[target].value, tags[last].value, len+1);
+  // tags[target] = tags[last];
   tags[last].used = 0;
   // move the last one to the hole above
   // update the tag block
+  // cprintf("after remove target key %s\n", tags[target].key);
+  // cprintf("after remove target value %s\n", tags[target].value);
   return updatetag(f, (char*) tags);
 }
 
