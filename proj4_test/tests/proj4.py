@@ -60,7 +60,7 @@ class usertests(Xv6Test):
   name = 'usertests'
   tester = 'ctests/' + ctestsDir + '/usertests.c'
   description = get_description('usertests')
-  timeout = 240
+  timeout = 480
 
 # To include full regression test by running usertests, uncomment the line below.
 # all_tests.append(usertests)

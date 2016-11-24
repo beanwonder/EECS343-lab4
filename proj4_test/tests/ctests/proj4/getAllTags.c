@@ -55,6 +55,21 @@ main(int argc, char *argv[])
 
    tagNum = getAllTags(fd, keys, 1);
    assert(tagNum == 3);
+
+   int valueLength;
+   char buf1[8] = {0};
+   valueLength = getFileTag(fd, keys[0].key, buf1, 7);
+   assert(valueLength == 7);
+   printf(1, "value0: %s\n", buf1);
+   valueLength = getFileTag(fd, keys[1].key, buf1, 7);
+   assert(valueLength == 7);
+   printf(1, "value1: %s\n", buf1);
+   valueLength = getFileTag(fd, keys[2].key, buf1, 7);
+   assert(valueLength == 7);
+   printf(1, "value2: %s\n", buf1);
+
+
+
 /*
    valueLength = getFileTag(fd, key, buf1, 7);
    assert(valueLength == 7);
